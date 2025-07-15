@@ -11,7 +11,9 @@ useEffect(() => {
 
     gsap.from([leftText.current,rightText.current ], {
       y: screenHeight/2,
-      duration: 2,
+      stagger: 0.1,
+      duration: 0.5,
+      delay: 0.5
     });
   });
 
