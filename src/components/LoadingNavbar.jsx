@@ -11,9 +11,10 @@ useEffect(() => {
 
     gsap.from([leftText.current,rightText.current ], {
       y: screenHeight/2,
-      stagger: 0.1,
-      duration: 0.5,
-      delay: 0.5
+      stagger: 0.15,
+      duration: 1,
+      ease: "power3.inOut",
+      delay: 0.3
     });
   });
 
