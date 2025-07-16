@@ -21,7 +21,7 @@ const LoadingScreen = () => {
         stagger: 0.15,
         duration: 1,
         ease: "power3.inOut",
-        delay: 0.3,
+        delay: 0.29,
       });
 
       // Step 2: Prepare headings off-screen
