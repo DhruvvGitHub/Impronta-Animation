@@ -5,62 +5,92 @@ import gsap from "gsap";
 const LoadingScreen = () => {
   const headingRefs = useRef([]);
   const mainHeadRef = useRef(null);
-    const navDivRef = useRef(null)
+  const navDivRef = useRef(null);
+  const leftText = useRef(null);
+  const rightText = useRef(null);
 
-    console.log(navDivRef);
-useEffect(() => {
-  const ctx = gsap.context(() => {
-    const tl = gsap.timeline({ delay: 1 });
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const screenHeight = window.innerHeight;
+      const heightToGo = window.innerHeight / 20;
+      console.log(heightToGo);
 
-    // Step 1: Set all positions before animation
-    headingRefs.current.forEach((heading) => {
-      gsap.set(heading, { y: 1000 });
-    });
-    gsap.set(mainHeadRef.current, { y: 1000 });
-
-    // Step 2: Animate 3 headings one by one
-    headingRefs.current.forEach((heading) => {
-      tl.to(heading, {
-        y: 0,
-        duration: 1.3,
-      }).to(heading, {
-        y: -1000,
-        rotate: -15,
-        duration: 1.3,
+      // Step 1: Animate EST 2002 & California (nav)
+      gsap.from([leftText.current, rightText.current], {
+        y: screenHeight / 2,
+        stagger: 0.15,
+        duration: 1,
+        ease: "power3.inOut",
+        delay: 0.3,
       });
+
+      // Step 2: Prepare headings off-screen
+      headingRefs.current.forEach((heading) => {
+        gsap.set(heading, { y: 1000 });
+      });
+      gsap.set(mainHeadRef.current, { y: 1000 });
+
+      // Step 3: Create timeline
+      const tl = gsap.timeline({ delay: 1.5 });
+
+      // Animate Living → Space → Future
+      headingRefs.current.forEach((heading) => {
+        tl.to(heading, {
+          y: 0,
+          duration: 1.15,
+        }).to(
+          heading,
+          {
+            y: -1000,
+            rotate: -15,
+            duration: 1.15,
+            ease: "power3.inOut",
+          },
+          "+=0.1"
+        );
+      });
+
+      // Animate Impronta in, then to top
+      tl.to(mainHeadRef.current, {
+        y: 0,
+        duration: 1.15,
+      }).to(mainHeadRef.current, {
+  y: -(window.innerHeight / 2 - 40), // moves up to around 40px from top
+  duration: 1.15,
+  ease: "power3.inOut"
+});
+
     });
 
-    // Step 3: Animate mainHead last
-    tl.to(mainHeadRef.current, {
-      y: 0,
-      duration: 1.3,
-    }).to(mainHeadRef.current, {
-      y: -1000,
-      rotate: -15,
-      duration: 1.3,
-    });
-  });
-
-  return () => ctx.revert();
-}, []);
-
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden justify-between bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12">
-      <LoadingNavbar navDivRef={navDivRef} />
-      <div className="headings-div relative h-60 flex items-center">
+    <div className="w-full h-screen flex flex-col !overflow-hidden justify-between bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12">
+      <div
+        ref={navDivRef}
+        className="text-white flex items-center justify-between relative"
+      >
+        <p ref={leftText}>EST 2002</p>
+        <p ref={rightText}>California</p>
+      </div>
+
+      <div className="headings-div h-40 xl:h-60 flex items-center relative">
         {["Living", "Space", "Future"].map((text, i) => (
           <h2
             key={i}
-            ref={(el) => {
-              headingRefs.current[i] = el;
-            }}
+            ref={(el) => (headingRefs.current[i] = el)}
             className="text-9xl font-semibold text-white absolute"
           >
             {text}
           </h2>
         ))}
-        <h2 ref={mainHeadRef} className="text-9xl font-semibold text-white absolute">Impronta</h2>
+        <h2
+          ref={mainHeadRef}
+          className="text-9xl font-semibold text-white absolute"
+        >
+          Impronta
+        </h2>
       </div>
     </div>
   );
