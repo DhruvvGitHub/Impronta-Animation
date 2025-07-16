@@ -55,11 +55,10 @@ const LoadingScreen = () => {
         y: 0,
         duration: 1.15,
       }).to(mainHeadRef.current, {
-  y: -(window.innerHeight / 2 - 40), // moves up to around 40px from top
-  duration: 1.15,
-  ease: "power3.inOut"
-});
-
+        top: "-10%", // moves up to around 40px from top
+        duration: 1.15,
+        ease: "power3.inOut",
+      });
     });
 
     return () => ctx.revert();
@@ -75,7 +74,8 @@ const LoadingScreen = () => {
         <p ref={rightText}>California</p>
       </div>
 
-      <div className="headings-div h-40 xl:h-60 flex items-center relative">
+      <div className="headings-div relative flex-1 flex items-end">
+
         {["Living", "Space", "Future"].map((text, i) => (
           <h2
             key={i}
@@ -85,12 +85,13 @@ const LoadingScreen = () => {
             {text}
           </h2>
         ))}
-        <h2
-          ref={mainHeadRef}
-          className="text-9xl font-semibold text-white absolute"
-        >
-          Impronta
-        </h2>
+       <h2
+  ref={mainHeadRef}
+  className="text-9xl font-semibold text-white absolute"
+>
+  Impronta
+</h2>
+
       </div>
     </div>
   );
