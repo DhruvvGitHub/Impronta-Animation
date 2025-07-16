@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import React, { useEffect, useRef } from "react";
 
-const LoadingNavbar = () => {
+const LoadingNavbar = ({navDivRef}) => {
   const leftText = useRef(null);
   const rightText = useRef(null);
 
@@ -24,7 +24,7 @@ useEffect(() => {
 
 
   return (
-    <div className="text-white flex items-center justify-between relative">
+    <div ref={navDivRef} className="text-white flex items-center justify-between relative">
       <p ref={leftText}>EST 2002</p>
       <p ref={rightText}>California</p>
     </div>
