@@ -38,6 +38,7 @@ const LoadingScreen = () => {
         tl.to(heading, {
           y: 0,
           duration: 1.15,
+          delay: -1.1
         }).to(
           heading,
           {
@@ -54,11 +55,17 @@ const LoadingScreen = () => {
       tl.to(mainHeadRef.current, {
         y: 0,
         duration: 1.15,
+          delay: -1.1
       }).to(mainHeadRef.current, {
         top: "-10%", // moves up to around 40px from top
         duration: 1.15,
         ease: "power3.inOut",
-      });
+      },"a")
+      .to(navDivRef.current, {
+        y: -500,
+        duration: 1,
+        delay: 0.7
+      },"a")
     });
 
     return () => ctx.revert();
