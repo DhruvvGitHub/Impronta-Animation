@@ -117,7 +117,6 @@ const LoadingScreen = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* ✅ Impronta stays fixed */}
       <div className="absolute top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none z-50">
         <h2
           ref={mainHeadRef}
@@ -127,7 +126,6 @@ const LoadingScreen = () => {
         </h2>
       </div>
 
-      {/* ✅ Loading overlay */}
       <div
         ref={loadingDiv}
         className="absolute top-0 left-0 w-full h-screen flex flex-col justify-between z-10 bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12"
