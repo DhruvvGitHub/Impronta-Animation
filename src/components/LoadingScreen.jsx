@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import LoadingNavbar from "./LoadingNavbar";
 import gsap from "gsap";
 import homeMainImage from "../assets/home_main_img.jpg";
 
@@ -18,10 +17,8 @@ const LoadingScreen = () => {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const screenHeight = window.innerHeight;
-      const heightToGo = window.innerHeight / 20;
-      console.log(heightToGo);
 
-      // Step 1: Animate EST 2002 & California (nav)
+      // Animate nav texts
       gsap.from([leftText.current, rightText.current], {
         y: screenHeight / 2,
         stagger: 0.15,
@@ -30,21 +27,21 @@ const LoadingScreen = () => {
         delay: 0.29,
       });
 
-      // Step 2: Prepare headings off-screen
+      // Prepare headings off-screen
       headingRefs.current.forEach((heading) => {
         gsap.set(heading, { y: 1000 });
       });
       gsap.set(mainHeadRef.current, { y: 1000 });
 
-      // Step 3: Create timeline
+      // Timeline
       const tl = gsap.timeline({ delay: 1.5 });
 
-      // Animate Living → Space → Future
+      // Animate "Living", "Space", "Future"
       headingRefs.current.forEach((heading) => {
         tl.to(heading, {
           y: 0,
           duration: 1.15,
-          delay: -1.1
+          delay: -1.1,
         }).to(
           heading,
           {
@@ -57,55 +54,93 @@ const LoadingScreen = () => {
         );
       });
 
-      // Animate Impronta in, then to top
-      tl.to(mainHeadRef.current, {
-        y: 0,
-        duration: 1.15,
-          delay: -1.1
-      }).to(mainHeadRef.current, {
-        top: "-10%", // moves up to around 40px from top
-        duration: 1.15,
-        ease: "power3.inOut",
-      },"a")
-      .to(navDivRef.current, {
-        y: -500,
-        duration: 1,
-        delay: 0.7
-      },"a")
-      .fromTo(homeMainContainer.current, {
-        top: "100%",
-        duration: 1,
-      },{
-        zIndex: 50
-      },"a")
-      .to(loadingDiv.current, {
-        zIndex: -1
-      },"a")
-      .from(homeLeftDiv.current, {
-        width: "0%",
-        duration: 1
-      },"b")
-      .from(homeRightDiv.current, {
-        width: "100%",
-        duration: 1
-      },"b")
+      // Animate Impronta in (keep it centered)
+      tl.to(
+        mainHeadRef.current,
+        {
+          y: 0,
+          duration: 1.15,
+          delay: -1.1,
+        },
+        "a"
+      );
+
+      // Animate everything in parallel
+      tl.to(
+        navDivRef.current,
+        {
+          y: -500,
+          duration: 1,
+          delay: 0.7,
+        },
+        "a"
+      )
+        .to(
+          homeMainContainer.current,
+          {
+            top: 0,
+            zIndex: 30,
+            duration: 1,
+            ease: "power3.inOut",
+          },
+          "a"
+        )
+        .to(
+          loadingDiv.current,
+          {
+            top: "-100%",
+            duration: 1,
+            ease: "power3.inOut",
+          },
+          "a"
+        )
+        .from(
+          homeLeftDiv.current,
+          {
+            width: "0%",
+            duration: 1,
+          },
+          "b"
+        )
+        .from(
+          homeRightDiv.current,
+          {
+            width: "100%",
+            duration: 1,
+          },
+          "b"
+        );
     });
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div>
-      <div ref={loadingDiv} className="w-full h-screen absolute flex flex-col !overflow-hidden justify-between z-20 bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12">
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* ✅ Impronta stays fixed */}
+      <div className="absolute top-0 left-0 w-full h-screen flex items-center justify-center pointer-events-none z-50">
+        <h2
+          ref={mainHeadRef}
+          className="text-9xl font-semibold text-black"
+        >
+          Impronta
+        </h2>
+      </div>
+
+      {/* ✅ Loading overlay */}
+      <div
+        ref={loadingDiv}
+        className="absolute top-0 left-0 w-full h-screen flex flex-col justify-between z-10 bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12"
+      >
         <div
           ref={navDivRef}
-          className="text-white flex items-center justify-between relative"
+          className="text-white flex items-center justify-between"
         >
           <p ref={leftText}>EST 2002</p>
           <p ref={rightText}>California</p>
         </div>
 
-        <div className="headings-div relative flex-1 flex items-end">
+        <div className="relative flex-1 flex items-end">
           {["Living", "Space", "Future"].map((text, i) => (
             <h2
               key={i}
@@ -115,52 +150,53 @@ const LoadingScreen = () => {
               {text}
             </h2>
           ))}
-          <h2
-            ref={mainHeadRef}
-            className="text-9xl font-semibold text-white absolute z-9999"
-          >
-            Impronta
-          </h2>
         </div>
       </div>
-      <div className="w-full h-screen">
-        <div ref={homeMainContainer} className="w-full h-full flex z-9999">
-          <div ref={homeLeftDiv} className="home-left w-[40%] flex flex-col justify-between pb-4">
-            <div className="home-nav flex gap-12">
-              <div className="w-fit py-6 px-4 bg-[#2A2A2A] text-white ">
-                <p className="text-xs">MENU</p>
-              </div>
-              <div className="logo-name">
-                <h5 ref={logoTitle} className="text-2xl font-semibold">
-                  Impronta
-                </h5>
-              </div>
+
+      {/* ✅ Main content (initially below, animates up) */}
+      <div
+        ref={homeMainContainer}
+        className="absolute top-full left-0 w-full h-full flex z-0"
+      >
+        <div
+          ref={homeLeftDiv}
+          className="w-[40%] flex flex-col justify-between pb-4 bg-white"
+        >
+          <div className="flex gap-12">
+            <div className="w-fit py-6 px-4 bg-[#2A2A2A] text-white">
+              <p className="text-xs">MENU</p>
             </div>
-            <div className="home-middle w-fit  flex items-end text-white">
-              <div className="middle-left px-4 pr-20 py-10 flex items-center gap-10 bg-[#2A2A2A]">
-                <p className="text-xs">01.03</p>
-                <h5>Progetti</h5>
-              </div>
-              <div className="middle-right bg-[#2A2A2A] px-8 py-4">
-                <p className="text-xs underline">TUTTI PROGETTI</p>
-              </div>
-            </div>
-            <div className="home-bottom px-28">
-              <h5 className="text-2xl font-semibold">Living</h5>
-              <h5 className="text-2xl font-semibold">Space</h5>
-              <h5 className="text-2xl font-semibold">Future</h5>
+            <div>
+              <h5 ref={logoTitle} className="text-2xl font-semibold">
+                Impronta
+              </h5>
             </div>
           </div>
-          <div
-            ref={homeRightDiv}
-            className="home-right w-[60%] h-full bg-zinc-500"
-          >
-            <img
-              src={homeMainImage}
-              className="w-full h-full object-cover"
-              alt=""
-            />
+          <div className="w-fit flex items-end text-white">
+            <div className="px-4 pr-20 py-10 flex items-center gap-10 bg-[#2A2A2A]">
+              <p className="text-xs">01.03</p>
+              <h5>Progetti</h5>
+            </div>
+            <div className="bg-[#2A2A2A] px-8 py-4">
+              <p className="text-xs underline">TUTTI PROGETTI</p>
+            </div>
           </div>
+          <div className="px-28">
+            <h5 className="text-2xl font-semibold">Living</h5>
+            <h5 className="text-2xl font-semibold">Space</h5>
+            <h5 className="text-2xl font-semibold">Future</h5>
+          </div>
+        </div>
+
+        <div
+          ref={homeRightDiv}
+          className="w-[60%] h-full bg-zinc-500"
+        >
+          <img
+            src={homeMainImage}
+            className="w-full h-full object-cover"
+            alt=""
+          />
         </div>
       </div>
     </div>
