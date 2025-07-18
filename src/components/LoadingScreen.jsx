@@ -13,6 +13,7 @@ const LoadingScreen = () => {
   const homeRightDiv = useRef(null);
   const loadingDiv = useRef(null);
   const homeLeftDiv = useRef(null);
+  const homeMainContainer = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -71,17 +72,23 @@ const LoadingScreen = () => {
         duration: 1,
         delay: 0.7
       },"a")
+      .fromTo(homeMainContainer.current, {
+        top: "100%",
+        duration: 1,
+      },{
+        zIndex: 50
+      },"a")
       .to(loadingDiv.current, {
-        top: "-100%"
-      })
+        zIndex: -1
+      },"a")
       .from(homeLeftDiv.current, {
         width: "0%",
         duration: 1
-      })
+      },"b")
       .from(homeRightDiv.current, {
         width: "100%",
         duration: 1
-      })
+      },"b")
     });
 
     return () => ctx.revert();
@@ -89,7 +96,7 @@ const LoadingScreen = () => {
 
   return (
     <div>
-      <div ref={loadingDiv} className="w-full h-screen absolute flex flex-col !overflow-hidden justify-between bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12">
+      <div ref={loadingDiv} className="w-full h-screen absolute flex flex-col !overflow-hidden justify-between z-20 bg-[#265B80] px-8 sm:px-12 md:px-20 lg:px-28 py-6 sm:py-8 md:py-10 lg:py-12">
         <div
           ref={navDivRef}
           className="text-white flex items-center justify-between relative"
@@ -110,14 +117,14 @@ const LoadingScreen = () => {
           ))}
           <h2
             ref={mainHeadRef}
-            className="text-9xl font-semibold text-white absolute"
+            className="text-9xl font-semibold text-white absolute z-9999"
           >
             Impronta
           </h2>
         </div>
       </div>
-      <div className="w-full h-screen bg-amber-200">
-        <div className="w-full h-full flex ">
+      <div className="w-full h-screen">
+        <div ref={homeMainContainer} className="w-full h-full flex z-9999">
           <div ref={homeLeftDiv} className="home-left w-[40%] flex flex-col justify-between pb-4">
             <div className="home-nav flex gap-12">
               <div className="w-fit py-6 px-4 bg-[#2A2A2A] text-white ">
